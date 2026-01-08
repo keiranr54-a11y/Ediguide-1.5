@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ediguide — Global University Rankings</title>
+  <meta name="description" content="Ediguide Global University Rankings — search, filter, sort, and explore the top universities. Ad-ready layout with local ratings and notes." />
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Example Google AdSense snippet (commented) -->
+  <!--
+  <script data-ad-client="ca-pub-YOUR-AD-SENSE-ID" async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  -->
+  <!-- Firebase libraries (compat) for optional persistent comments -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body class="page">
+
+  <!-- TOP AD BANNER (Placeholder) -->
+  <div class="ad-slot ad-top" role="banner" aria-label="Top advertisement">
+    <div class="ad-inner">Top Banner Ad Placeholder — 970×90 / 728×90</div>
+  </div>
+
+  <!-- SITE HEADER -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="index.html" class="logo" aria-label="Ediguide home">
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect width="24" height="24" rx="4" fill="#0b57a9"></rect>
+            <path d="M6 16.5L12 9l6 7.5" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="site-title">Ediguide — Global 100</span>
+        </a>
+        <p class="tagline">University rankings — clean academic theme. Data from Ediguide's Global list.</p>
+      </div>
+
+      <div class="header-controls" role="search">
+        <label class="visually-hidden" for="search">Search universities</label>
+        <input id="search" type="search" placeholder="Search universities (name, country)..." aria-label="Search universities" />
+
+        <label class="visually-hidden" for="country">Filter by country</label>
+        <select id="country" aria-label="Filter by country">
+          <option value="">All countries</option>
+        </select>
+
+        <label class="visually-hidden" for="rank-min">Min rank</label>
+        <input id="rank-min" type="number" min="1" placeholder="min rank" aria-label="Minimum rank" />
+
+        <label class="visually-hidden" for="rank-max">Max rank</label>
+        <input id="rank-max" type="number" min="1" placeholder="max rank" aria-label="Maximum rank" />
+
+        <label class="visually-hidden" for="sort">Sort</label>
+        <select id="sort" aria-label="Sort results">
+          <option value="rank-asc">Rank ↑</option>
+          <option value="rank-desc">Rank ↓</option>
+          <option value="score-asc">Score ↑</option>
+          <option value="score-desc">Score ↓</option>
+          <option value="name-asc">Name A→Z</option>
+          <option value="name-desc">Name Z→A</option>
+          <option value="country-asc">Country A→Z</option>
+        </select>
+
+        <button id="resetFilters" class="btn small" title="Reset filters">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container layout" role="main">
+    <!-- PRIMARY COLUMN -->
+    <section class="main-col" aria-labelledby="rankings-heading">
+      <div class="controls-row">
+        <div id="results-info" class="results-info">Loading rankings…</div>
+        <div class="actions">
+          <button id="exportCsv" class="btn">Export CSV</button>
+          <button id="toggleCompact" class="btn">Compact view</button>
+        </div>
+      </div>
+
+      <!-- INLINE AD -->
+      <div class="ad-inline ad-slot">
+        <div class="ad-inner">Inline Ad Placeholder — 300×250</div>
+      </div>
+
+      <!-- RANKING TABLE -->
+      <div class="table-wrap" role="region" aria-label="University rankings table">
+        <table id="rankingTable" class="ranking-table" aria-describedby="table-desc">
+          <caption id="table-desc">List of universities and their scores. Use the controls above to search, filter, and sort.</caption>
+          <thead>
+            <tr>
+              <th scope="col" data-key="rank">Rank</th>
+              <th scope="col" data-key="university">University</th>
+              <th scope="col" data-key="country">Country</th>
+              <th scope="col" data-key="score">Score</th>
+              <th scope="col">Ad</th>
+              <th scope="col">Rating</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- table rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SPONSOR SLOT -->
+      <div class="ad-sponsor ad-slot" role="complementary" aria-label="Sponsor">
+        <div class="ad-inner">Sponsor Slot Placeholder — 728×90</div>
+      </div>
+
+      <!-- COMMENTS / RATING FORM -->
+      <section class="comments" aria-labelledby="notes-heading">
+        <h2 id="notes-heading">Visitor notes & ratings (local demo)</h2>
+
+        <form id="noteForm" class="note-form" aria-label="Add a note or rating">
+          <div class="form-row">
+            <label for="noteName">Name</label>
+            <input id="noteName" type="text" placeholder="Your name" required />
+          </div>
+
+          <div class="form-row">
+            <label for="noteUniv">University (optional)</label>
+            <input id="noteUniv" type="text" placeholder="e.g. Harvard University" />
+          </div>
+
+          <div class="form-row">
+            <label for="noteText">Note</label>
+            <textarea id="noteText" rows="3" placeholder="Share a short note..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <label for="noteRating">Rating</label>
+            <select id="noteRating">
+              <option value="">No rating</option>
+              <option value="1">★ 1</option>
+              <option value="2">★★ 2</option>
+              <option value="3">★★★ 3</option>
+              <option value="4">★★★★ 4</option>
+              <option value="5">★★★★★ 5</option>
+            </select>
+          </div>
+
+          <div class="form-row form-actions">
+            <button type="submit" class="btn">Save note (local)</button>
+            <button type="button" id="clearNotes" class="btn alt">Clear all local notes</button>
+          </div>
+        </form>
+
+        <div id="notesList" class="notes-list" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <!-- SIDEBAR -->
+    <aside class="side-col" aria-labelledby="sidebar-heading">
+      <div class="sticky">
+        <h3 id="sidebar-heading">Ad & Info</h3>
+
+        <div class="ad-slot ad-sidebar" role="complementary" aria-label="Sidebar advertisement">
+          <div class="ad-inner">Sidebar Ad Placeholder — 300×600</div>
+        </div>
+
+        <div class="filters-summary card">
+          <h4>Active Filters</h4>
+          <ul id="activeFilters"><li>None</li></ul>
+        </div>
+
+        <div class="card about">
+          <h4>About this demo</h4>
+          <p>This is a static, GitHub Pages–compatible demo. Ratings and notes are stored in your browser only (localStorage). Replace ad placeholders with your ad network when ready.</p>
+        </div>
+
+        <div class="card help">
+          <h4>Quick tips</h4>
+          <ol>
+            <li>Use the search to find a university by name.</li>
+            <li>Filter by country to narrow results.</li>
+            <li>Click star ratings to rate a university (local only).</li>
+          </ol>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div>© <span id="curYear"></span> Ediguide — University Rankings</div>
+      <div><small>Static demo — GitHub Pages compatible</small></div>
+    </div>
+
+    <div class="ad-slot ad-footer" role="complementary" aria-label="Footer ad">
+      <div class="ad-inner">Mobile Footer Ad Placeholder — 320×50</div>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
